@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Service.Services;
+using Web.ApiService;
 
 namespace Web
 {
@@ -38,6 +39,12 @@ namespace Web
                 options.UseSqlServer(Configuration["ConnectionStrings:SqlConStr"].ToString());
             });
 
+
+
+            services.AddHttpClient<CategoryApiService>(opt =>
+            {
+                opt.BaseAddress = new Uri(Configuration["baseUrl"]);
+            });
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IService<>), typeof(Service<>));
@@ -67,7 +74,7 @@ namespace Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Category}/{action=Create}/{id?}");
+                    pattern: "{controller=Category}/{action=Index}/{id?}");
             });
         }
     }
